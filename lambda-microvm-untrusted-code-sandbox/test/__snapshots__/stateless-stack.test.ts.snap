@@ -1,0 +1,180 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatelessStack matches the snapshot 1`] = `
+{
+  "Outputs": {
+    "SandboxExecutorFunctionName": {
+      "Description": "Name of the Lambda MicroVM Untrusted Code Sandbox placeholder function",
+      "Value": {
+        "Ref": "SandboxExecutorFunctionCA804881",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "SandboxExecutorFunctionCA804881": {
+      "DependsOn": [
+        "SandboxExecutorFunctionServiceRoleDefaultPolicyD39997EE",
+        "SandboxExecutorFunctionServiceRole0AF7DCA1",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "ASSET_HASH.zip",
+        },
+        "Description": "Lambda MicroVM Untrusted Code Sandbox placeholder handler (dev)",
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
+            "NODE_OPTIONS": "--enable-source-maps",
+            "TABLE_NAME": {
+              "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefSandboxJobTableD38DE693F7064784",
+            },
+          },
+        },
+        "FunctionName": "lambda-microvm-untrusted-code-sandbox-dev-sandbox-executor",
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "SandboxExecutorLogGroup76242D90",
+          },
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "SandboxExecutorFunctionServiceRole0AF7DCA1",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "SandboxExecutorFunctionServiceRole0AF7DCA1": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SandboxExecutorFunctionServiceRoleDefaultPolicyD39997EE": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttSandboxJobTableD38DE693ArnB7AFD42E",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttSandboxJobTableD38DE693ArnB7AFD42E",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SandboxExecutorFunctionServiceRoleDefaultPolicyD39997EE",
+        "Roles": [
+          {
+            "Ref": "SandboxExecutorFunctionServiceRole0AF7DCA1",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "SandboxExecutorLogGroup76242D90": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/lambda-microvm-untrusted-code-sandbox-dev-sandbox-executor",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

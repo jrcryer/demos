@@ -1,0 +1,28 @@
+# CDK
+cdk.out/
+cdk.context.json
+*.d.ts
+
+# Compiled output (TypeScript is executed via ts-node)
+*.js
+!jest.config.js
+!eslint.config.mjs
+*.js.map
+
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Test output
+coverage/
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local environment
+.env
+.env.local

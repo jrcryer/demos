@@ -1,0 +1,180 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatelessStack matches the snapshot 1`] = `
+{
+  "Outputs": {
+    "OrderWorkflowFunctionName": {
+      "Description": "Name of the Lambda Durable Functions Order Workflow placeholder function",
+      "Value": {
+        "Ref": "OrderWorkflowFunctionFCE821D4",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "OrderWorkflowFunctionFCE821D4": {
+      "DependsOn": [
+        "OrderWorkflowFunctionServiceRoleDefaultPolicy00D76072",
+        "OrderWorkflowFunctionServiceRoleD2135CA5",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Key": "ASSET_HASH.zip",
+        },
+        "Description": "Lambda Durable Functions Order Workflow placeholder handler (dev)",
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
+            "NODE_OPTIONS": "--enable-source-maps",
+            "TABLE_NAME": {
+              "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefOrderWorkflowTableCCCE0AEA1A1F3E5D",
+            },
+          },
+        },
+        "FunctionName": "lambda-durable-functions-order-workflow-dev-order-workflow",
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "OrderWorkflowLogGroupFED56FFA",
+          },
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "OrderWorkflowFunctionServiceRoleD2135CA5",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "OrderWorkflowFunctionServiceRoleD2135CA5": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "OrderWorkflowFunctionServiceRoleDefaultPolicy00D76072": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttOrderWorkflowTableCCCE0AEAArn08548C62",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttOrderWorkflowTableCCCE0AEAArn08548C62",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "OrderWorkflowFunctionServiceRoleDefaultPolicy00D76072",
+        "Roles": [
+          {
+            "Ref": "OrderWorkflowFunctionServiceRoleD2135CA5",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "OrderWorkflowLogGroupFED56FFA": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/lambda-durable-functions-order-workflow-dev-order-workflow",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
