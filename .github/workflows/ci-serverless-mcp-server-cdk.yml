@@ -1,0 +1,23 @@
+name: CI serverless-mcp-server-cdk
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'serverless-mcp-server-cdk/**'
+      - '.github/workflows/ci-demo.yml'
+      - '.github/workflows/ci-serverless-mcp-server-cdk.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-serverless-mcp-server-cdk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-demo.yml
+    with:
+      demo-dir: serverless-mcp-server-cdk
