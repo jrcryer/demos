@@ -1,0 +1,23 @@
+name: CI lambda-microvm-untrusted-code-sandbox
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lambda-microvm-untrusted-code-sandbox/**'
+      - '.github/workflows/ci-demo.yml'
+      - '.github/workflows/ci-lambda-microvm-untrusted-code-sandbox.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-lambda-microvm-untrusted-code-sandbox-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-demo.yml
+    with:
+      demo-dir: lambda-microvm-untrusted-code-sandbox

@@ -1,0 +1,42 @@
+name: CI demo
+
+on:
+  workflow_call:
+    inputs:
+      demo-dir:
+        description: Directory of the demo to build
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Lint, test and synth
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.demo-dir }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ inputs.demo-dir }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Synthesize CloudFormation templates
+        run: npx cdk synth

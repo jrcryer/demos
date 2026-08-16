@@ -1,0 +1,23 @@
+name: CI lambda-durable-functions-order-workflow
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lambda-durable-functions-order-workflow/**'
+      - '.github/workflows/ci-demo.yml'
+      - '.github/workflows/ci-lambda-durable-functions-order-workflow.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-lambda-durable-functions-order-workflow-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-demo.yml
+    with:
+      demo-dir: lambda-durable-functions-order-workflow
