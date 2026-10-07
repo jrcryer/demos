@@ -1,0 +1,23 @@
+name: CI step-functions-ticket-router
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'step-functions-ticket-router/**'
+      - '.github/workflows/ci-demo.yml'
+      - '.github/workflows/ci-step-functions-ticket-router.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-step-functions-ticket-router-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-demo.yml
+    with:
+      demo-dir: step-functions-ticket-router

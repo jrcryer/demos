@@ -1,0 +1,470 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatefulStack matches the snapshot 1`] = `
+{
+  "Outputs": {
+    "DecisionsTableName": {
+      "Description": "DynamoDB table holding every routing decision",
+      "Value": {
+        "Ref": "DecisionsTable2B2636B5",
+      },
+    },
+    "ExportsOutputFnGetAttAccountAccessQueue637995EAArn769AABFD": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttAccountAccessQueue637995EAArn769AABFD",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "AccountAccessQueue637995EA",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttBillingQueue49E1530EArn05C98ED4": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttBillingQueue49E1530EArn05C98ED4",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "BillingQueue49E1530E",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttGeneralQueue3A3125B8ArnC5841654": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttGeneralQueue3A3125B8ArnC5841654",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "GeneralQueue3A3125B8",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttHumanReviewQueue7EC7D6B7ArnA29E8AE5": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttHumanReviewQueue7EC7D6B7ArnA29E8AE5",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "HumanReviewQueue7EC7D6B7",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttTechnicalQueue1A2B7DA3ArnF557B831": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttTechnicalQueue1A2B7DA3ArnF557B831",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "TechnicalQueue1A2B7DA3",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputRefAccountAccessQueue637995EA074B2350": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefAccountAccessQueue637995EA074B2350",
+      },
+      "Value": {
+        "Ref": "AccountAccessQueue637995EA",
+      },
+    },
+    "ExportsOutputRefBillingQueue49E1530EF8EB9D31": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefBillingQueue49E1530EF8EB9D31",
+      },
+      "Value": {
+        "Ref": "BillingQueue49E1530E",
+      },
+    },
+    "ExportsOutputRefDecisionsTable2B2636B5A2ADDB94": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
+      },
+      "Value": {
+        "Ref": "DecisionsTable2B2636B5",
+      },
+    },
+    "ExportsOutputRefGeneralQueue3A3125B8A050D8EF": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefGeneralQueue3A3125B8A050D8EF",
+      },
+      "Value": {
+        "Ref": "GeneralQueue3A3125B8",
+      },
+    },
+    "ExportsOutputRefHumanReviewQueue7EC7D6B765389D50": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefHumanReviewQueue7EC7D6B765389D50",
+      },
+      "Value": {
+        "Ref": "HumanReviewQueue7EC7D6B7",
+      },
+    },
+    "ExportsOutputRefOpenAiApiKeyAB1C389B84BB45B9": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefOpenAiApiKeyAB1C389B84BB45B9",
+      },
+      "Value": {
+        "Ref": "OpenAiApiKeyAB1C389B",
+      },
+    },
+    "ExportsOutputRefTechnicalQueue1A2B7DA3E9859ACD": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefTechnicalQueue1A2B7DA3E9859ACD",
+      },
+      "Value": {
+        "Ref": "TechnicalQueue1A2B7DA3",
+      },
+    },
+    "OpenAiSecretName": {
+      "Description": "Secret to put the OpenAI API key in",
+      "Value": {
+        "Fn::Join": [
+          "-",
+          [
+            {
+              "Fn::Select": [
+                0,
+                {
+                  "Fn::Split": [
+                    "-",
+                    {
+                      "Fn::Select": [
+                        6,
+                        {
+                          "Fn::Split": [
+                            ":",
+                            {
+                              "Ref": "OpenAiApiKeyAB1C389B",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              "Fn::Select": [
+                1,
+                {
+                  "Fn::Split": [
+                    "-",
+                    {
+                      "Fn::Select": [
+                        6,
+                        {
+                          "Fn::Split": [
+                            ":",
+                            {
+                              "Ref": "OpenAiApiKeyAB1C389B",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        ],
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "AccountAccessQueue637995EA": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "MessageRetentionPeriod": 345600,
+        "SqsManagedSseEnabled": true,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "AccountAccessQueuePolicy25566C29": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "AccountAccessQueue637995EA",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "AccountAccessQueue637995EA",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "BillingQueue49E1530E": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "MessageRetentionPeriod": 345600,
+        "SqsManagedSseEnabled": true,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "BillingQueuePolicy277E06C9": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "BillingQueue49E1530E",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "BillingQueue49E1530E",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "DecisionsTable2B2636B5": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "ticketId",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "provider",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "ticketId",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "provider",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": false,
+        },
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GeneralQueue3A3125B8": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "MessageRetentionPeriod": 345600,
+        "SqsManagedSseEnabled": true,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "GeneralQueuePolicyC7CF1456": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "GeneralQueue3A3125B8",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "GeneralQueue3A3125B8",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "HumanReviewQueue7EC7D6B7": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "MessageRetentionPeriod": 345600,
+        "SqsManagedSseEnabled": true,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "HumanReviewQueuePolicy5CAB6C3A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "HumanReviewQueue7EC7D6B7",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "HumanReviewQueue7EC7D6B7",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+    "OpenAiApiKeyAB1C389B": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "Description": "OpenAI API key used by the Decisions API ticket router",
+        "SecretString": "REPLACE_ME",
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TechnicalQueue1A2B7DA3": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "MessageRetentionPeriod": 345600,
+        "SqsManagedSseEnabled": true,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "TechnicalQueuePolicyBF95C856": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false",
+                },
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*",
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "TechnicalQueue1A2B7DA3",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Queues": [
+          {
+            "Ref": "TechnicalQueue1A2B7DA3",
+          },
+        ],
+      },
+      "Type": "AWS::SQS::QueuePolicy",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
