@@ -223,15 +223,16 @@ test/                                  Jest tests: classifier mapping and CDK as
 
 ## Useful commands
 
-| Command           | Description                                     |
-| ----------------- | ----------------------------------------------- |
-| `npm run build`   | Type-check and compile the TypeScript sources   |
-| `npm test`        | Run the Jest test suite                         |
-| `npm run lint`    | Run ESLint                                      |
-| `npm run compare` | Compare both classifiers on `data/tickets.json` |
-| `npm run synth`   | Synthesize the CloudFormation templates         |
-| `npm run deploy`  | Deploy all stacks                               |
-| `npm run destroy` | Destroy all stacks                              |
+| Command             | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `npm run build`     | Type-check and compile the TypeScript sources   |
+| `npm run typecheck` | Type-check the project with `tsc --noEmit`      |
+| `npm test`          | Type-check, then run the Jest test suite        |
+| `npm run lint`      | Run ESLint                                      |
+| `npm run compare`   | Compare both classifiers on `data/tickets.json` |
+| `npm run synth`     | Synthesize the CloudFormation templates         |
+| `npm run deploy`    | Deploy all stacks                               |
+| `npm run destroy`   | Destroy all stacks                              |
 
 Snapshot tests are updated with `npm test -- -u`.
 

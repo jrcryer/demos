@@ -13,6 +13,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run typecheck",
     "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
