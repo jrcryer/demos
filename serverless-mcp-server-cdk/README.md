@@ -30,8 +30,8 @@ pattern:
 ## Deploy
 
 ```bash
-git clone https://github.com/aws-samples/serverless-mcp-server-cdk.git
-cd serverless-mcp-server-cdk
+git clone https://github.com/jrcryer/demos.git
+cd demos/serverless-mcp-server-cdk
 
 npm ci
 
@@ -104,13 +104,3 @@ npx cdk destroy --all
 
 In `prod` the DynamoDB table is created with a `RETAIN` removal policy, so it
 survives stack deletion and must be removed manually if it is no longer needed.
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more
-information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE)
-file.
