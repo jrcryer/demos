@@ -250,13 +250,3 @@ npx cdk destroy --all
 
 In `prod` the table, queues and secret use a `RETAIN` removal policy and must
 be deleted by hand.
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more
-information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE)
-file.
