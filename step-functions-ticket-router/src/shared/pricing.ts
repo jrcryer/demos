@@ -28,6 +28,7 @@ export const OPENAI_DECISIONS_PRICE: TokenPrice = {
 const CLAUDE_LIST_PRICES: Record<string, TokenPrice> = {
   'claude-opus-5-5': { inputPerMTok: 4, outputPerMTok: 20 },
   'claude-sonnet-5-5': { inputPerMTok: 2, outputPerMTok: 10 },
+  'claude-sonnet-4-6': { inputPerMTok: 3, outputPerMTok: 15 },
   'claude-haiku-4-5': { inputPerMTok: 1, outputPerMTok: 5 },
 };
 
