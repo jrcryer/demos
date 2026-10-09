@@ -1,0 +1,855 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatelessStack matches the snapshot 1`] = `
+{
+  "Outputs": {
+    "ClaudeStateMachineArn": {
+      "Description": "Ticket router backed by Claude on Amazon Bedrock",
+      "Value": {
+        "Ref": "ClaudeTicketRouterStateMachine47ABEC68",
+      },
+    },
+    "DecisionsStateMachineArn": {
+      "Description": "Ticket router backed by the OpenAI Decisions API",
+      "Value": {
+        "Ref": "DecisionsTicketRouterStateMachineF2872BEE",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ClaudeRouterFunctionE77A8548": {
+      "DependsOn": [
+        "ClaudeRouterFunctionServiceRoleDefaultPolicy1670A2AC",
+        "ClaudeRouterFunctionServiceRoleD89C231C",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-eu-west-1",
+          "S3Key": "ASSET_HASH.zip",
+        },
+        "Description": "Routes support tickets with Claude on Amazon Bedrock (dev)",
+        "Environment": {
+          "Variables": {
+            "CLAUDE_MODEL": "global.anthropic.claude-opus-5-5",
+            "ENVIRONMENT": "dev",
+            "NODE_OPTIONS": "--enable-source-maps",
+          },
+        },
+        "FunctionName": "step-functions-ticket-router-dev-claude-router",
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "ClaudeRouterLogGroupEC2A5FB8",
+          },
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "ClaudeRouterFunctionServiceRoleD89C231C",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ClaudeRouterFunctionServiceRoleD89C231C": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClaudeRouterFunctionServiceRoleDefaultPolicy1670A2AC": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": "bedrock:InvokeModel",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:eu-west-1:123456789012:inference-profile/global.anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:*::foundation-model/anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:::foundation-model/anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:eu-west-1:123456789012:inference-profile/global.anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:*::foundation-model/anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:::foundation-model/anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClaudeRouterFunctionServiceRoleDefaultPolicy1670A2AC",
+        "Roles": [
+          {
+            "Ref": "ClaudeRouterFunctionServiceRoleD89C231C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "ClaudeRouterLogGroupEC2A5FB8": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/step-functions-ticket-router-dev-claude-router",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ClaudeTicketRouterLogGroupC150A2DA": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/vendedlogs/states/step-functions-ticket-router-dev-claude",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ClaudeTicketRouterStateMachine47ABEC68": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "ClaudeTicketRouterStateMachineRoleDefaultPolicy74E901BC",
+        "ClaudeTicketRouterStateMachineRoleB2F4D8BB",
+      ],
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Join": [
+            "",
+            [
+              "{"StartAt":"Classify ticket","States":{"Classify ticket":{"Next":"Record decision","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2},{"ErrorEquals":["States.TaskFailed"],"IntervalSeconds":1,"MaxAttempts":2,"BackoffRate":2}],"Catch":[{"ErrorEquals":["States.ALL"],"ResultPath":"$.error","Next":"Send to human review"}],"Type":"Task","ResultPath":"$.decision","Resource":"",
+              {
+                "Fn::GetAtt": [
+                  "ClaudeRouterFunctionE77A8548",
+                  "Arn",
+                ],
+              },
+              "","Parameters":{"ticket.$":"$.ticket"}},"Record decision":{"Next":"Route ticket","Type":"Task","ResultPath":null,"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::dynamodb:putItem","Parameters":{"Item":{"ticketId":{"S.$":"$.decision.ticketId"},"provider":{"S.$":"$.decision.provider"},"route":{"S.$":"$.decision.route"},"urgency":{"S.$":"$.decision.urgency"},"latencyMs":{"N.$":"States.Format('{}', $.decision.latencyMs)"},"decision":{"S.$":"States.JsonToString($.decision)"},"executionId":{"S.$":"$$.Execution.Id"}},"TableName":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
+              },
+              ""}},"Route ticket":{"Type":"Choice","Choices":[{"Variable":"$.decision.needsHuman","BooleanEquals":true,"Next":"Send to human review","Comment":"The model flagged the ticket for a senior agent."},{"Variable":"$.decision.urgency","StringEquals":"critical","Next":"Send to human review","Comment":"Critical tickets skip the queues."},{"And":[{"Variable":"$.decision.routeConfidence","IsNumeric":true},{"Variable":"$.decision.routeConfidence","NumericLessThan":0.6}],"Next":"Send to human review","Comment":"Low-confidence routes. Only providers that report a confidence hit this."},{"Variable":"$.decision.route","StringEquals":"billing","Next":"Send to billing"},{"Variable":"$.decision.route","StringEquals":"technical","Next":"Send to technical"},{"Variable":"$.decision.route","StringEquals":"account_access","Next":"Send to account_access"}],"Default":"Send to general"},"Send to general":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"general","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefGeneralQueue3A3125B8A050D8EF",
+              },
+              "","MessageBody.$":"$"}},"Send to human review":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"human_review","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefHumanReviewQueue7EC7D6B765389D50",
+              },
+              "","MessageBody.$":"$"}},"Send to billing":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"billing","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefBillingQueue49E1530EF8EB9D31",
+              },
+              "","MessageBody.$":"$"}},"Send to technical":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"technical","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefTechnicalQueue1A2B7DA3E9859ACD",
+              },
+              "","MessageBody.$":"$"}},"Send to account_access":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"account_access","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefAccountAccessQueue637995EA074B2350",
+              },
+              "","MessageBody.$":"$"}}},"TimeoutSeconds":120}",
+            ],
+          ],
+        },
+        "LoggingConfiguration": {
+          "Destinations": [
+            {
+              "CloudWatchLogsLogGroup": {
+                "LogGroupArn": {
+                  "Fn::GetAtt": [
+                    "ClaudeTicketRouterLogGroupC150A2DA",
+                    "Arn",
+                  ],
+                },
+              },
+            },
+          ],
+          "IncludeExecutionData": true,
+          "Level": "ALL",
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "ClaudeTicketRouterStateMachineRoleB2F4D8BB",
+            "Arn",
+          ],
+        },
+        "StateMachineName": "step-functions-ticket-router-dev-claude",
+        "StateMachineType": "EXPRESS",
+        "TracingConfiguration": {
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "ClaudeTicketRouterStateMachineRoleB2F4D8BB": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ClaudeTicketRouterStateMachineRoleDefaultPolicy74E901BC": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ClaudeRouterFunctionE77A8548",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ClaudeRouterFunctionE77A8548",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "dynamodb:PutItem",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:123456789012:table/",
+                    {
+                      "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttGeneralQueue3A3125B8ArnC5841654",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttHumanReviewQueue7EC7D6B7ArnA29E8AE5",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttBillingQueue49E1530EArn05C98ED4",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttTechnicalQueue1A2B7DA3ArnF557B831",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttAccountAccessQueue637995EAArn769AABFD",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ClaudeTicketRouterStateMachineRoleDefaultPolicy74E901BC",
+        "Roles": [
+          {
+            "Ref": "ClaudeTicketRouterStateMachineRoleB2F4D8BB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "DecisionsRouterFunctionC93CE361": {
+      "DependsOn": [
+        "DecisionsRouterFunctionServiceRoleDefaultPolicyF9733C1E",
+        "DecisionsRouterFunctionServiceRole31F8E985",
+      ],
+      "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
+        "Code": {
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-eu-west-1",
+          "S3Key": "ASSET_HASH.zip",
+        },
+        "Description": "Routes support tickets with the OpenAI Decisions API (dev)",
+        "Environment": {
+          "Variables": {
+            "ENVIRONMENT": "dev",
+            "NODE_OPTIONS": "--enable-source-maps",
+            "OPENAI_MODEL": "gpt-6-luna",
+            "OPENAI_SECRET_ARN": {
+              "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefOpenAiApiKeyAB1C389B84BB45B9",
+            },
+          },
+        },
+        "FunctionName": "step-functions-ticket-router-dev-decisions-router",
+        "Handler": "index.handler",
+        "LoggingConfig": {
+          "LogGroup": {
+            "Ref": "DecisionsRouterLogGroupA56B953E",
+          },
+        },
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "DecisionsRouterFunctionServiceRole31F8E985",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs22.x",
+        "Timeout": 30,
+        "TracingConfig": {
+          "Mode": "Active",
+        },
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "DecisionsRouterFunctionServiceRole31F8E985": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DecisionsRouterFunctionServiceRoleDefaultPolicyF9733C1E": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefOpenAiApiKeyAB1C389B84BB45B9",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DecisionsRouterFunctionServiceRoleDefaultPolicyF9733C1E",
+        "Roles": [
+          {
+            "Ref": "DecisionsRouterFunctionServiceRole31F8E985",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "DecisionsRouterLogGroupA56B953E": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/step-functions-ticket-router-dev-decisions-router",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DecisionsTicketRouterLogGroup98C51D68": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "LogGroupName": "/aws/vendedlogs/states/step-functions-ticket-router-dev-decisions",
+        "RetentionInDays": 7,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DecisionsTicketRouterStateMachineF2872BEE": {
+      "DeletionPolicy": "Delete",
+      "DependsOn": [
+        "DecisionsTicketRouterStateMachineRoleDefaultPolicy4C3CC36A",
+        "DecisionsTicketRouterStateMachineRoleBE0BCD81",
+      ],
+      "Properties": {
+        "DefinitionString": {
+          "Fn::Join": [
+            "",
+            [
+              "{"StartAt":"Classify ticket","States":{"Classify ticket":{"Next":"Record decision","Retry":[{"ErrorEquals":["Lambda.ClientExecutionTimeoutException","Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2},{"ErrorEquals":["States.TaskFailed"],"IntervalSeconds":1,"MaxAttempts":2,"BackoffRate":2}],"Catch":[{"ErrorEquals":["States.ALL"],"ResultPath":"$.error","Next":"Send to human review"}],"Type":"Task","ResultPath":"$.decision","Resource":"",
+              {
+                "Fn::GetAtt": [
+                  "DecisionsRouterFunctionC93CE361",
+                  "Arn",
+                ],
+              },
+              "","Parameters":{"ticket.$":"$.ticket"}},"Record decision":{"Next":"Route ticket","Type":"Task","ResultPath":null,"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::dynamodb:putItem","Parameters":{"Item":{"ticketId":{"S.$":"$.decision.ticketId"},"provider":{"S.$":"$.decision.provider"},"route":{"S.$":"$.decision.route"},"urgency":{"S.$":"$.decision.urgency"},"latencyMs":{"N.$":"States.Format('{}', $.decision.latencyMs)"},"decision":{"S.$":"States.JsonToString($.decision)"},"executionId":{"S.$":"$$.Execution.Id"}},"TableName":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
+              },
+              ""}},"Route ticket":{"Type":"Choice","Choices":[{"Variable":"$.decision.needsHuman","BooleanEquals":true,"Next":"Send to human review","Comment":"The model flagged the ticket for a senior agent."},{"Variable":"$.decision.urgency","StringEquals":"critical","Next":"Send to human review","Comment":"Critical tickets skip the queues."},{"And":[{"Variable":"$.decision.routeConfidence","IsNumeric":true},{"Variable":"$.decision.routeConfidence","NumericLessThan":0.6}],"Next":"Send to human review","Comment":"Low-confidence routes. Only providers that report a confidence hit this."},{"Variable":"$.decision.route","StringEquals":"billing","Next":"Send to billing"},{"Variable":"$.decision.route","StringEquals":"technical","Next":"Send to technical"},{"Variable":"$.decision.route","StringEquals":"account_access","Next":"Send to account_access"}],"Default":"Send to general"},"Send to general":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"general","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefGeneralQueue3A3125B8A050D8EF",
+              },
+              "","MessageBody.$":"$"}},"Send to human review":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"human_review","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefHumanReviewQueue7EC7D6B765389D50",
+              },
+              "","MessageBody.$":"$"}},"Send to billing":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"billing","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefBillingQueue49E1530EF8EB9D31",
+              },
+              "","MessageBody.$":"$"}},"Send to technical":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"technical","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefTechnicalQueue1A2B7DA3E9859ACD",
+              },
+              "","MessageBody.$":"$"}},"Send to account_access":{"End":true,"Type":"Task","ResultPath":"$.delivery","ResultSelector":{"queue":"account_access","messageId.$":"$.MessageId"},"Resource":"arn:",
+              {
+                "Ref": "AWS::Partition",
+              },
+              ":states:::sqs:sendMessage","Parameters":{"QueueUrl":"",
+              {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefAccountAccessQueue637995EA074B2350",
+              },
+              "","MessageBody.$":"$"}}},"TimeoutSeconds":120}",
+            ],
+          ],
+        },
+        "LoggingConfiguration": {
+          "Destinations": [
+            {
+              "CloudWatchLogsLogGroup": {
+                "LogGroupArn": {
+                  "Fn::GetAtt": [
+                    "DecisionsTicketRouterLogGroup98C51D68",
+                    "Arn",
+                  ],
+                },
+              },
+            },
+          ],
+          "IncludeExecutionData": true,
+          "Level": "ALL",
+        },
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "DecisionsTicketRouterStateMachineRoleBE0BCD81",
+            "Arn",
+          ],
+        },
+        "StateMachineName": "step-functions-ticket-router-dev-decisions",
+        "StateMachineType": "EXPRESS",
+        "TracingConfiguration": {
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::StepFunctions::StateMachine",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DecisionsTicketRouterStateMachineRoleBE0BCD81": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "states.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DecisionsTicketRouterStateMachineRoleDefaultPolicy4C3CC36A": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "DecisionsRouterFunctionC93CE361",
+                    "Arn",
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "DecisionsRouterFunctionC93CE361",
+                          "Arn",
+                        ],
+                      },
+                      ":*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "dynamodb:PutItem",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:123456789012:table/",
+                    {
+                      "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttGeneralQueue3A3125B8ArnC5841654",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttHumanReviewQueue7EC7D6B7ArnA29E8AE5",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttBillingQueue49E1530EArn05C98ED4",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttTechnicalQueue1A2B7DA3ArnF557B831",
+              },
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::ImportValue": "TestStatefulStack:ExportsOutputFnGetAttAccountAccessQueue637995EAArn769AABFD",
+              },
+            },
+            {
+              "Action": [
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DecisionsTicketRouterStateMachineRoleDefaultPolicy4C3CC36A",
+        "Roles": [
+          {
+            "Ref": "DecisionsTicketRouterStateMachineRoleBE0BCD81",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
