@@ -25,7 +25,7 @@ export interface TestStacks {
 export function createTestStacks(): TestStacks {
   const app = new App({ context: { env: 'dev' } });
   const config = getConfig(app);
-  const env = { account: '123456789012', region: 'us-east-1' };
+  const env = { account: '123456789012', region: 'eu-west-1' };
 
   const stateful = new StatefulStack(app, 'TestStatefulStack', { env, config });
   const stateless = new StatelessStack(app, 'TestStatelessStack', {

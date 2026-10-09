@@ -1,6 +1,10 @@
 import { App, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { DEFAULT_CLAUDE_MODEL, DEFAULT_OPENAI_MODEL } from '../../src/shared/models';
+import {
+  DEFAULT_CLAUDE_MODEL,
+  DEFAULT_OPENAI_MODEL,
+  DEFAULT_REGION,
+} from '../../src/shared/models';
 
 /** Name used to prefix stack names and physical resource names. */
 export const APP_NAME = 'step-functions-ticket-router';
@@ -14,7 +18,10 @@ export interface EnvironmentConfig {
   readonly envName: EnvironmentName;
   /** Target account, resolved from the ambient CDK environment. */
   readonly account?: string;
-  /** Target region, resolved from the ambient CDK environment. */
+  /**
+   * Target region (`-c region=...`). Defaults to eu-west-1 rather than the AWS
+   * CLI profile's region, so the deploy target doesn't depend on local setup.
+   */
   readonly region: string;
   /** CloudWatch Logs retention applied to Lambda and state machine log groups. */
   readonly logRetention: RetentionDays;
@@ -78,7 +85,7 @@ export function getConfig(app: App): EnvironmentConfig {
   return {
     envName,
     account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION ?? 'us-east-1',
+    region: (app.node.tryGetContext('region') as string | undefined) ?? DEFAULT_REGION,
     openaiModel:
       (app.node.tryGetContext('openaiModel') as string | undefined) ?? DEFAULT_OPENAI_MODEL,
     claudeModel:

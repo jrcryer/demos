@@ -34,7 +34,7 @@ exports[`StatelessStack matches the snapshot 1`] = `
           "arm64",
         ],
         "Code": {
-          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-eu-west-1",
           "S3Key": "ASSET_HASH.zip",
         },
         "Description": "Routes support tickets with Claude on Amazon Bedrock (dev)",
@@ -304,7 +304,7 @@ exports[`StatelessStack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":dynamodb:us-east-1:123456789012:table/",
+                    ":dynamodb:eu-west-1:123456789012:table/",
                     {
                       "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
                     },
@@ -393,7 +393,7 @@ exports[`StatelessStack matches the snapshot 1`] = `
           "arm64",
         ],
         "Code": {
-          "S3Bucket": "cdk-hnb659fds-assets-123456789012-us-east-1",
+          "S3Bucket": "cdk-hnb659fds-assets-123456789012-eu-west-1",
           "S3Key": "ASSET_HASH.zip",
         },
         "Description": "Routes support tickets with the OpenAI Decisions API (dev)",
@@ -671,7 +671,7 @@ exports[`StatelessStack matches the snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":dynamodb:us-east-1:123456789012:table/",
+                    ":dynamodb:eu-west-1:123456789012:table/",
                     {
                       "Fn::ImportValue": "TestStatefulStack:ExportsOutputRefDecisionsTable2B2636B5A2ADDB94",
                     },

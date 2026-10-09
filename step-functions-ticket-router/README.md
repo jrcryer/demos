@@ -108,9 +108,8 @@ Run the comparison yourself with the labelled tickets in `data/tickets.json`.
 Don't take the "10x faster" claim, or this README, on trust:
 
 ```bash
-export OPENAI_API_KEY=sk-...
-export AWS_REGION=us-east-1      # with AWS credentials that can call bedrock-mantle
-npm run compare -- --runs 3
+export OPENAI_API_KEY=sk-...    # plus AWS credentials that can call bedrock-mantle
+npm run compare -- --runs 3     # calls Bedrock in eu-west-1; add --region to change
 ```
 
 It calls both classifiers directly (no Lambda), alternating which provider
@@ -154,6 +153,15 @@ npm ci
 npx cdk bootstrap
 
 npx cdk deploy --all
+```
+
+Stacks deploy to `eu-west-1` by default, whatever region your AWS CLI profile
+uses. Pick another with `-c region=...` on every `cdk` command, for example
+`npx cdk deploy --all -c region=us-east-1`. The AWS CLI commands below use
+your profile's region, so point them at the same one:
+
+```bash
+export AWS_REGION=eu-west-1
 ```
 
 The OpenAI key is never put in a template. The secret is created with a

@@ -1,4 +1,8 @@
-/** Default models. Kept free of SDK imports so the CDK app can read them. */
+/** Defaults shared by the CDK app and the compare script. Kept free of SDK imports. */
+
+/** AWS region the stacks deploy to and the compare script calls; override with `-c region=...`. */
+export const DEFAULT_REGION = 'eu-west-1';
+
 export const DEFAULT_OPENAI_MODEL = 'gpt-6-luna';
 
 /** Bedrock model ID; override with `-c claudeModel=anthropic.claude-haiku-4-5` and similar. */

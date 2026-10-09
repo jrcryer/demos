@@ -2,7 +2,7 @@
  * Runs the labelled tickets in data/tickets.json through both classifiers and
  * prints accuracy, latency and cost side by side.
  *
- *   OPENAI_API_KEY=... AWS_REGION=us-east-1 npm run compare -- --runs 3
+ *   OPENAI_API_KEY=... npm run compare -- --runs 3 [--region eu-west-1]
  *
  * The classifiers are called directly rather than through Lambda, so latency
  * is the model call alone. Each run alternates provider order per ticket so
@@ -13,7 +13,7 @@ import * as path from 'node:path';
 import OpenAI from 'openai';
 import { classifyWithClaude, createClaudeClient } from '../src/classifiers/claude-bedrock';
 import { classifyWithDecisions } from '../src/classifiers/openai-decisions';
-import { DEFAULT_CLAUDE_MODEL, DEFAULT_OPENAI_MODEL } from '../src/shared/models';
+import { DEFAULT_CLAUDE_MODEL, DEFAULT_OPENAI_MODEL, DEFAULT_REGION } from '../src/shared/models';
 import type { Provider, Route, RouteDecision, Ticket } from '../src/shared/routing';
 
 interface LabelledTicket {
@@ -48,7 +48,7 @@ async function main(): Promise<void> {
   ) as LabelledTicket[];
 
   const openai = new OpenAI({ maxRetries: 2 });
-  const claude = createClaudeClient(process.env.AWS_REGION);
+  const claude = createClaudeClient(argValue('region', DEFAULT_REGION));
 
   const classifiers: Record<Provider, (ticket: Ticket) => Promise<RouteDecision>> = {
     'openai-decisions': (ticket) => classifyWithDecisions(openai, ticket, openaiModel),
