@@ -108,8 +108,10 @@ Run the comparison yourself with the labelled tickets in `data/tickets.json`.
 Don't take the "10x faster" claim, or this README, on trust:
 
 ```bash
-export OPENAI_API_KEY=sk-...    # plus AWS credentials that can invoke Claude on Bedrock
-npm run compare -- --runs 3     # calls Bedrock in eu-west-1; add --region to change
+export OPENAI_API_KEY=sk-...
+# AWS_PROFILE: a profile that can invoke Claude on Bedrock. Calls go to eu-west-1;
+# add --region to change.
+AWS_PROFILE=your-profile npm run compare -- --runs 3
 ```
 
 It calls both classifiers directly (no Lambda), alternating which provider
@@ -147,31 +149,35 @@ prices. Bedrock sets its own rates, so set `CLAUDE_INPUT_USD_PER_MTOK` and
 
 ## Deploy
 
+Every `cdk` and `aws` command below takes your AWS named profile with
+`--profile`. Set it once per shell, along with the region the stacks live in:
+
+```bash
+PROFILE=your-profile
+export AWS_REGION=eu-west-1
+```
+
 ```bash
 cd step-functions-ticket-router
 npm ci
 
 # One-time per account/region.
-npx cdk bootstrap
+npx cdk bootstrap --profile "$PROFILE"
 
-npx cdk deploy --all
+npx cdk deploy --all --profile "$PROFILE"
 ```
 
-Stacks deploy to `eu-west-1` by default, whatever region your AWS CLI profile
-uses. Pick another with `-c region=...` on every `cdk` command, for example
-`npx cdk deploy --all -c region=us-east-1`. The AWS CLI commands below use
-your profile's region, so point them at the same one:
-
-```bash
-export AWS_REGION=eu-west-1
-```
+Stacks deploy to `eu-west-1` by default, whatever region your profile uses.
+Pick another with `-c region=...` on every `cdk` command, for example
+`npx cdk deploy --all --profile "$PROFILE" -c region=us-east-1`, and set
+`AWS_REGION` to match so the `aws` commands look in the same place.
 
 The OpenAI key is never put in a template. The secret is created with a
 placeholder; set the real value after the first deploy:
 
 ```bash
-aws secretsmanager put-secret-value \
-  --secret-id "$(aws cloudformation describe-stacks \
+aws secretsmanager put-secret-value --profile "$PROFILE" \
+  --secret-id "$(aws cloudformation describe-stacks --profile "$PROFILE" \
       --stack-name step-functions-ticket-router-stateful-dev \
       --query "Stacks[0].Outputs[?OutputKey=='OpenAiSecretName'].OutputValue" --output text)" \
   --secret-string "sk-..."
@@ -180,8 +186,8 @@ aws secretsmanager put-secret-value \
 Choose models through CDK context:
 
 ```bash
-npx cdk deploy --all -c claudeModel=global.anthropic.claude-haiku-4-5-20251001-v1:0 -c openaiModel=gpt-6-luna
-npx cdk deploy --all -c env=prod
+npx cdk deploy --all --profile "$PROFILE" -c claudeModel=global.anthropic.claude-haiku-4-5-20251001-v1:0 -c openaiModel=gpt-6-luna
+npx cdk deploy --all --profile "$PROFILE" -c env=prod
 ```
 
 ## Route a ticket
@@ -190,11 +196,11 @@ Express state machines support synchronous execution, so you get the
 decision back in the response:
 
 ```bash
-STATE_MACHINE_ARN=$(aws cloudformation describe-stacks \
+STATE_MACHINE_ARN=$(aws cloudformation describe-stacks --profile "$PROFILE" \
   --stack-name step-functions-ticket-router-stateless-dev \
   --query "Stacks[0].Outputs[?OutputKey=='ClaudeStateMachineArn'].OutputValue" --output text)
 
-aws stepfunctions start-sync-execution \
+aws stepfunctions start-sync-execution --profile "$PROFILE" \
   --state-machine-arn "$STATE_MACHINE_ARN" \
   --input '{"ticket":{"ticketId":"T-42","subject":"API returning 500s","body":"Every POST to /v2/orders fails since 09:10 UTC."}}' \
   --query output --output text | jq
@@ -204,7 +210,7 @@ Use `DecisionsStateMachineArn` for the OpenAI version. Send the same
 `ticketId` to both and the decisions table holds one item per provider:
 
 ```bash
-aws dynamodb query --table-name <DecisionsTableName> \
+aws dynamodb query --profile "$PROFILE" --table-name <DecisionsTableName> \
   --key-condition-expression 'ticketId = :t' \
   --expression-attribute-values '{":t":{"S":"T-42"}}'
 ```
@@ -255,7 +261,7 @@ and `cdk synth` on pull requests, and deploy on push to `main`.
 ## Cleanup
 
 ```bash
-npx cdk destroy --all
+npx cdk destroy --all --profile "$PROFILE"
 ```
 
 In `prod` the table, queues and secret use a `RETAIN` removal policy and must

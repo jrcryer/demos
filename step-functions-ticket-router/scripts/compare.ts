@@ -2,7 +2,7 @@
  * Runs the labelled tickets in data/tickets.json through both classifiers and
  * prints accuracy, latency and cost side by side.
  *
- *   OPENAI_API_KEY=... npm run compare -- --runs 3 [--region eu-west-1]
+ *   OPENAI_API_KEY=... AWS_PROFILE=your-profile npm run compare -- --runs 3 [--region eu-west-1]
  *
  * The classifiers are called directly rather than through Lambda, so latency
  * is the model call alone. Each run alternates provider order per ticket so
