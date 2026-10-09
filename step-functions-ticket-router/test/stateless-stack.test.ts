@@ -17,19 +17,27 @@ describe('StatelessStack', () => {
     });
     template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
-        Variables: Match.objectLike({ CLAUDE_MODEL: 'anthropic.claude-opus-5-5' }),
+        Variables: Match.objectLike({ CLAUDE_MODEL: 'global.anthropic.claude-opus-5-5' }),
       },
     });
   });
 
-  it('lets the Claude function call the Bedrock Mantle endpoint', () => {
-    template.hasResourceProperties('AWS::IAM::Policy', {
-      PolicyDocument: {
-        Statement: Match.arrayWith([
-          Match.objectLike({ Action: 'bedrock-mantle:CreateInference', Effect: 'Allow' }),
-        ]),
-      },
-    });
+  it('lets the Claude function invoke only the configured models', () => {
+    const policies = Object.values(template.findResources('AWS::IAM::Policy'));
+    const statements = policies.flatMap(
+      (policy) =>
+        (policy as { Properties: { PolicyDocument: { Statement: Record<string, unknown>[] } } })
+          .Properties.PolicyDocument.Statement,
+    );
+    const invoke = statements.find((statement) => statement.Action === 'bedrock:InvokeModel');
+    const resources = JSON.stringify(invoke?.Resource);
+
+    for (const model of ['anthropic.claude-opus-5-5', 'anthropic.claude-opus-4-8']) {
+      expect(resources).toContain(`inference-profile/global.${model}`);
+      expect(resources).toContain(`:bedrock:*::foundation-model/${model}`);
+      expect(resources).toContain(`:bedrock:::foundation-model/${model}`);
+    }
+    expect(resources).not.toContain('"*"');
   });
 
   it('creates two express state machines', () => {

@@ -27,10 +27,10 @@ Two Express state machines are deployed from the same `TicketRouter`
 construct (`lib/constructs/ticket-router.ts`). Their definitions are
 identical. A test asserts this. Only the classifier Lambda differs:
 
-| State machine                                  | Classifier Lambda               | Model call                                                              |
-| ---------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------- |
-| `step-functions-ticket-router-<env>-decisions` | `src/handlers/decisions-router` | `openai.decisions.create()`: one choice, score and predicate question   |
-| `step-functions-ticket-router-<env>-claude`    | `src/handlers/claude-router`    | `AnthropicBedrockMantle.beta.messages.parse()` with a Zod output format |
+| State machine                                  | Classifier Lambda               | Model call                                                            |
+| ---------------------------------------------- | ------------------------------- | --------------------------------------------------------------------- |
+| `step-functions-ticket-router-<env>-decisions` | `src/handlers/decisions-router` | `openai.decisions.create()`: one choice, score and predicate question |
+| `step-functions-ticket-router-<env>-claude`    | `src/handlers/claude-router`    | `AnthropicBedrock.beta.messages.parse()` with a Zod output format     |
 
 Both Lambdas return the same `RouteDecision` (`src/shared/routing.ts`), so the
 Choice state can't tell which provider produced it.
@@ -78,7 +78,7 @@ const RoutingSchema = z.object({
 });
 
 const message = await client.beta.messages.parse({
-  model: 'anthropic.claude-opus-5-5',
+  model: 'global.anthropic.claude-opus-5-5',
   max_tokens: 2048,
   system: SYSTEM_PROMPT,
   messages: [{ role: 'user', content: buildContent(ticket) }],
@@ -96,7 +96,7 @@ const message = await client.beta.messages.parse({
 | Allowed values enforced by | The server: a choice answer is always one of the supplied `choices`                                                                 | The client: the SDK moves `enum` into the field description, so the API constrains the JSON shape and Zod rejects out-of-range values in `parse()` |
 | Confidence                 | Calibrated probabilities per choice, plus `confidence`                                                                              | None. `routeConfidence` is `null`, so the Choice state's confidence rule never fires                                                               |
 | Ordinal output             | `score` is a probability-weighted index (e.g. `1.6`), so you snap it to a level                                                     | You get a level directly, with no notion of "between `normal` and `high`"                                                                          |
-| Refusals                   | Per question: `{ type: 'refusal', name }`                                                                                           | Per request: `stop_reason: 'refusal'`. This demo registers `betaRefusalFallbackMiddleware` to retry on `anthropic.claude-opus-4-8` first           |
+| Refusals                   | Per question: `{ type: 'refusal', name }`                                                                                           | Per request: `stop_reason: 'refusal'`. This demo registers `betaRefusalFallbackMiddleware` to retry on `global.anthropic.claude-opus-4-8` first    |
 | Images                     | Inline base64 data URLs only (`input_image`)                                                                                        | Base64 `image` blocks                                                                                                                              |
 
 In both routers, any refusal or unparseable answer sets `needsHuman: true`.
@@ -108,7 +108,7 @@ Run the comparison yourself with the labelled tickets in `data/tickets.json`.
 Don't take the "10x faster" claim, or this README, on trust:
 
 ```bash
-export OPENAI_API_KEY=sk-...    # plus AWS credentials that can call bedrock-mantle
+export OPENAI_API_KEY=sk-...    # plus AWS credentials that can invoke Claude on Bedrock
 npm run compare -- --runs 3     # calls Bedrock in eu-west-1; add --region to change
 ```
 
@@ -119,12 +119,12 @@ goes first, and prints a table like this:
 | Provider         | Model                     | Route accuracy | Escalation accuracy | p50 latency | p95 latency | Cost / 1k tickets |
 | ---------------- | ------------------------- | -------------- | ------------------- | ----------- | ----------- | ----------------- |
 | openai-decisions | gpt-6-luna                | …              | …                   | … ms        | … ms        | $…                |
-| claude-bedrock   | anthropic.claude-opus-5-5 | …              | …                   | … ms        | … ms        | $…                |
+| claude-bedrock   | global.anthropic.claude-opus-5-5 | …              | …                   | … ms        | … ms        | $…                |
 ```
 
 Raw samples are written to `results/` (git-ignored). Pass `--claude-model` or
 `--openai-model` to try other models, for example
-`--claude-model anthropic.claude-haiku-4-5` for a cheaper, faster Claude
+`--claude-model global.anthropic.claude-haiku-4-5-20251001-v1:0` for a cheaper, faster Claude
 baseline.
 
 Cost estimates use `src/shared/pricing.ts`: the Decisions API bills only
@@ -137,10 +137,12 @@ prices. Bedrock sets its own rates, so set `CLAUDE_INPUT_USD_PER_MTOK` and
 - [Node.js](https://nodejs.org/) 20 or later and npm 10 or later
 - An AWS account and credentials available to the AWS CLI / SDK
 - The target account and region [bootstrapped for CDK v2](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
-- Access to the Claude model in Amazon Bedrock in the target region. The
-  Claude Lambda calls the Bedrock Mantle endpoint
-  (`bedrock-mantle.<region>.api.aws/anthropic`), which authorises
-  `bedrock-mantle:CreateInference`, not `bedrock:InvokeModel`.
+- Access to Claude Opus 5.5 and Claude Opus 4.8 (the refusal fallback) in
+  Amazon Bedrock. Claude Opus 5.5 isn't served in-Region in eu-west-1, so the
+  Claude Lambda calls Bedrock Runtime with the global cross-Region inference
+  profile `global.anthropic.claude-opus-5-5`. Requests can be served from any
+  commercial Region. To keep them in EU Regions, deploy with
+  `-c claudeModel=eu.anthropic.claude-opus-5-5`.
 - An OpenAI API key with access to the Decisions API beta
 
 ## Deploy
@@ -178,7 +180,7 @@ aws secretsmanager put-secret-value \
 Choose models through CDK context:
 
 ```bash
-npx cdk deploy --all -c claudeModel=anthropic.claude-haiku-4-5 -c openaiModel=gpt-6-luna
+npx cdk deploy --all -c claudeModel=global.anthropic.claude-haiku-4-5-20251001-v1:0 -c openaiModel=gpt-6-luna
 npx cdk deploy --all -c env=prod
 ```
 

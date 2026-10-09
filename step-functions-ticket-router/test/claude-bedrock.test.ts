@@ -1,4 +1,4 @@
-import type { AnthropicBedrockMantle } from '@anthropic-ai/bedrock-sdk';
+import type { AnthropicBedrock } from '@anthropic-ai/bedrock-sdk';
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
 import {
   RoutingSchema,
@@ -33,7 +33,7 @@ describe('Claude on Bedrock classifier', () => {
     const decision = toRouteDecision(
       ticket,
       {
-        model: 'anthropic.claude-opus-5-5',
+        model: 'global.anthropic.claude-opus-5-5',
         stopReason: 'end_turn',
         output: { route: 'technical', urgency: 'high', needs_human: false },
         inputTokens: 600,
@@ -45,7 +45,7 @@ describe('Claude on Bedrock classifier', () => {
     expect(decision).toEqual({
       ticketId: 'T-2',
       provider: 'claude-bedrock',
-      model: 'anthropic.claude-opus-5-5',
+      model: 'global.anthropic.claude-opus-5-5',
       route: 'technical',
       urgency: 'high',
       needsHuman: false,
@@ -60,7 +60,7 @@ describe('Claude on Bedrock classifier', () => {
     const decision = toRouteDecision(
       ticket,
       {
-        model: 'anthropic.claude-opus-4-8',
+        model: 'global.anthropic.claude-opus-4-8',
         stopReason: 'refusal',
         output: null,
         inputTokens: 600,
@@ -84,18 +84,18 @@ describe('Claude on Bedrock classifier', () => {
 
   it('asks for a structured output at low effort', async () => {
     const parse = jest.fn().mockResolvedValue({
-      model: 'anthropic.claude-opus-5-5',
+      model: 'global.anthropic.claude-opus-5-5',
       stop_reason: 'end_turn',
       parsed_output: { route: 'technical', urgency: 'critical', needs_human: false },
       usage: { input_tokens: 600, output_tokens: 40 },
     });
-    const client = { beta: { messages: { parse } } } as unknown as AnthropicBedrockMantle;
+    const client = { beta: { messages: { parse } } } as unknown as AnthropicBedrock;
 
     const result = await classifyWithClaude(client, ticket);
 
     expect(parse).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'anthropic.claude-opus-5-5',
+        model: 'global.anthropic.claude-opus-5-5',
         output_config: expect.objectContaining({
           effort: 'low',
           format: expect.objectContaining({ type: 'json_schema' }),

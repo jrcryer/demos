@@ -8,6 +8,7 @@ import { LogGroup } from 'aws-cdk-lib/aws-logs';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 import { TicketRouter } from './constructs/ticket-router';
+import { CLAUDE_FALLBACK_MODEL, foundationModelId } from '../src/shared/models';
 import { APP_NAME, EnvironmentConfig } from './shared/config';
 import type { RouteQueues } from './stateful-stack';
 
@@ -81,12 +82,25 @@ export class StatelessStack extends Stack {
       `Routes support tickets with Claude on Amazon Bedrock (${config.envName})`,
       { CLAUDE_MODEL: config.claudeModel },
     );
-    // The Bedrock Mantle endpoint (bedrock-mantle.<region>.api.aws) authorises
-    // SigV4 calls with its own action, not bedrock:InvokeModel.
+    // A cross-Region inference profile needs InvokeModel on the profile itself
+    // and on the foundation model in every Region it can route to. Global
+    // profiles also check the Region-less foundation model ARN.
+    const claudeModels = [config.claudeModel, CLAUDE_FALLBACK_MODEL];
     claudeFunction.addToRolePolicy(
       new PolicyStatement({
-        actions: ['bedrock-mantle:CreateInference'],
-        resources: ['*'],
+        actions: ['bedrock:InvokeModel'],
+        resources: claudeModels.flatMap((modelId) => {
+          const foundation = foundationModelId(modelId);
+          return [
+            ...(foundation === modelId
+              ? []
+              : [
+                  `arn:${this.partition}:bedrock:${this.region}:${this.account}:inference-profile/${modelId}`,
+                ]),
+            `arn:${this.partition}:bedrock:*::foundation-model/${foundation}`,
+            `arn:${this.partition}:bedrock:::foundation-model/${foundation}`,
+          ];
+        }),
       }),
     );
 

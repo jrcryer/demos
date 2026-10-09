@@ -40,7 +40,7 @@ exports[`StatelessStack matches the snapshot 1`] = `
         "Description": "Routes support tickets with Claude on Amazon Bedrock (dev)",
         "Environment": {
           "Variables": {
-            "CLAUDE_MODEL": "anthropic.claude-opus-5-5",
+            "CLAUDE_MODEL": "global.anthropic.claude-opus-5-5",
             "ENVIRONMENT": "dev",
             "NODE_OPTIONS": "--enable-source-maps",
           },
@@ -111,9 +111,82 @@ exports[`StatelessStack matches the snapshot 1`] = `
               "Resource": "*",
             },
             {
-              "Action": "bedrock-mantle:CreateInference",
+              "Action": "bedrock:InvokeModel",
               "Effect": "Allow",
-              "Resource": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:eu-west-1:123456789012:inference-profile/global.anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:*::foundation-model/anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:::foundation-model/anthropic.claude-opus-5-5",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:eu-west-1:123456789012:inference-profile/global.anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:*::foundation-model/anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":bedrock:::foundation-model/anthropic.claude-opus-4-8",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
