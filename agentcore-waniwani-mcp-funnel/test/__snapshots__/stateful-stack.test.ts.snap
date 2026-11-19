@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`StatefulStack matches the snapshot 1`] = `
+{
+  "Outputs": {
+    "ExportsOutputFnGetAttFlowStateTable0B26DCEAArnEFD064F3": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttFlowStateTable0B26DCEAArnEFD064F3",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "FlowStateTable0B26DCEA",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputFnGetAttLeadsTableB370ABE7Arn50E7F1AF": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputFnGetAttLeadsTableB370ABE7Arn50E7F1AF",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "LeadsTableB370ABE7",
+          "Arn",
+        ],
+      },
+    },
+    "ExportsOutputRefFlowStateTable0B26DCEA42BC4ECE": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefFlowStateTable0B26DCEA42BC4ECE",
+      },
+      "Value": {
+        "Ref": "FlowStateTable0B26DCEA",
+      },
+    },
+    "ExportsOutputRefLeadsTableB370ABE7A0821F38": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefLeadsTableB370ABE7A0821F38",
+      },
+      "Value": {
+        "Ref": "LeadsTableB370ABE7",
+      },
+    },
+    "ExportsOutputRefUserPool6BA7E5F296FD7236": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefUserPool6BA7E5F296FD7236",
+      },
+      "Value": {
+        "Ref": "UserPool6BA7E5F2",
+      },
+    },
+    "ExportsOutputRefUserPoolMcpClient2D19DB876064FDF5": {
+      "Export": {
+        "Name": "TestStatefulStack:ExportsOutputRefUserPoolMcpClient2D19DB876064FDF5",
+      },
+      "Value": {
+        "Ref": "UserPoolMcpClient2D19DB87",
+      },
+    },
+    "FlowStateTableName": {
+      "Value": {
+        "Ref": "FlowStateTable0B26DCEA",
+      },
+    },
+    "LeadsTableName": {
+      "Value": {
+        "Ref": "LeadsTableB370ABE7",
+      },
+    },
+    "McpClientId": {
+      "Value": {
+        "Ref": "UserPoolMcpClient2D19DB87",
+      },
+    },
+    "TokenEndpoint": {
+      "Description": "OAuth 2.0 token endpoint for the client-credentials grant",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Ref": "UserPoolDomainD0EA232A",
+            },
+            ".auth.us-east-1.amazoncognito.com/oauth2/token",
+          ],
+        ],
+      },
+    },
+    "UserPoolId": {
+      "Value": {
+        "Ref": "UserPool6BA7E5F2",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "FlowStateTable0B26DCEA": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH",
+          },
+        ],
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+        "TimeToLiveSpecification": {
+          "AttributeName": "ttl",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LeadsTableB370ABE7": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "leadId",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "leadId",
+            "KeyType": "HASH",
+          },
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": false,
+        },
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "UserPool6BA7E5F2": {
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AccountRecoverySetting": {
+          "RecoveryMechanisms": [
+            {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "VerificationMessageTemplate": {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "UserPoolDomainD0EA232A": {
+      "Properties": {
+        "Domain": {
+          "Fn::Join": [
+            "",
+            [
+              "solar-quote-dev-",
+              {
+                "Ref": "AWS::AccountId",
+              },
+            ],
+          ],
+        },
+        "UserPoolId": {
+          "Ref": "UserPool6BA7E5F2",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolDomain",
+    },
+    "UserPoolMcpClient2D19DB87": {
+      "Properties": {
+        "AccessTokenValidity": 60,
+        "AllowedOAuthFlows": [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Ref": "UserPoolResourceServer05D1463A",
+                },
+                "/invoke",
+              ],
+            ],
+          },
+        ],
+        "GenerateSecret": true,
+        "SupportedIdentityProviders": [
+          "COGNITO",
+        ],
+        "TokenValidityUnits": {
+          "AccessToken": "minutes",
+        },
+        "UserPoolId": {
+          "Ref": "UserPool6BA7E5F2",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "UserPoolResourceServer05D1463A": {
+      "Properties": {
+        "Identifier": "solar-quote",
+        "Name": "solar-quote",
+        "Scopes": [
+          {
+            "ScopeDescription": "Call the solar quote MCP server",
+            "ScopeName": "invoke",
+          },
+        ],
+        "UserPoolId": {
+          "Ref": "UserPool6BA7E5F2",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolResourceServer",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

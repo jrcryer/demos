@@ -7,6 +7,11 @@ on:
         description: Directory of the demo to deploy
         required: true
         type: string
+      docker-platforms:
+        description: Platforms to emulate for Docker image assets, e.g. linux/arm64
+        required: false
+        type: string
+        default: ''
 
 permissions:
   id-token: write
@@ -41,6 +46,12 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Set up QEMU
+        if: inputs.docker-platforms != ''
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ inputs.docker-platforms }}
 
       - name: Deploy
         run: npx cdk deploy --all --require-approval never
