@@ -1,0 +1,27 @@
+name: Deploy agentcore-waniwani-mcp-funnel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agentcore-waniwani-mcp-funnel/**'
+      - '.github/workflows/deploy-demo.yml'
+      - '.github/workflows/deploy-agentcore-waniwani-mcp-funnel.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-agentcore-waniwani-mcp-funnel-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-demo.yml
+    with:
+      demo-dir: agentcore-waniwani-mcp-funnel
+      # AgentCore Runtime runs ARM64 containers; the x86 runner builds the
+      # image under emulation.
+      docker-platforms: linux/arm64

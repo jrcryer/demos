@@ -1,0 +1,9 @@
+# Allowlist: only what the image build needs. This also keeps the CDK asset
+# fingerprint stable when infrastructure code, tests or docs change.
+*
+!package.json
+!package-lock.json
+!tsconfig.json
+!Dockerfile
+!src
+!src/**

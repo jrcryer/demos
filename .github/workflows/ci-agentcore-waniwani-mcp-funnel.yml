@@ -1,0 +1,23 @@
+name: CI agentcore-waniwani-mcp-funnel
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'agentcore-waniwani-mcp-funnel/**'
+      - '.github/workflows/ci-demo.yml'
+      - '.github/workflows/ci-agentcore-waniwani-mcp-funnel.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-agentcore-waniwani-mcp-funnel-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/ci-demo.yml
+    with:
+      demo-dir: agentcore-waniwani-mcp-funnel

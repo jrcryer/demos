@@ -1,0 +1,57 @@
+{
+  "name": "agentcore-waniwani-mcp-funnel",
+  "version": "0.1.0",
+  "description": "An MCP funnel built with the open-source WaniWani SDK, hosted on Amazon Bedrock AgentCore Runtime and deployed with the AWS CDK.",
+  "license": "MIT-0",
+  "private": true,
+  "bin": {
+    "agentcore-waniwani-mcp-funnel": "bin/agentcore-waniwani-mcp-funnel.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run typecheck",
+    "test": "jest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --all",
+    "destroy": "cdk destroy --all",
+    "bundle:server": "esbuild src/mcp-server/main.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/server.mjs --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\"",
+    "dev:server": "npm run bundle:server && FLOW_STORE=memory LEAD_SINK=log node dist/server.mjs",
+    "smoke": "ts-node scripts/smoke.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1172.0",
+    "@aws-sdk/client-eventbridge": "^3.1172.0",
+    "@aws-sdk/client-secrets-manager": "^3.1172.0",
+    "@aws-sdk/lib-dynamodb": "^3.1172.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@waniwani/sdk": "^1.0.1",
+    "aws-cdk-lib": "^2.277.0",
+    "constructs": "^10.8.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.20.5",
+    "aws-cdk": "^2.1149.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.5.2",
+    "prettier": "^3.10.1",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.73.0"
+  }
+}
