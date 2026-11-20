@@ -133,6 +133,54 @@ The server reads the secret at start-up; the key is never placed in an environme
 template. Flow state stays in DynamoDB either way. With a key set, tool-call events — including
 the answers users give — are sent to WaniWani's service.
 
+## Observability
+
+The MCP server writes one structured log line per request to CloudWatch Logs. Each line says
+where a conversation is in the funnel; it records field names, never the answers:
+
+```json
+{
+  "message": "mcp_request",
+  "sessionId": "…",
+  "method": "tools/call",
+  "tool": "solar_quote",
+  "flowAction": "continue",
+  "answeredFields": ["monthlyBillUsd"],
+  "flowStatus": "interrupt",
+  "askedFields": ["name", "email"],
+  "httpStatus": 200,
+  "durationMs": 3
+}
+```
+
+AgentCore Runtime creates the log group. Find it and follow it:
+
+```bash
+aws logs describe-log-groups --log-group-name-prefix /aws/bedrock-agentcore/runtimes/ \
+  --query 'logGroups[].logGroupName' --output text
+
+aws logs tail <log group> --follow --since 30m
+```
+
+Two CloudWatch Logs Insights queries to start from:
+
+```text
+# One conversation, step by step
+fields @timestamp, flowAction, answeredFields, flowStatus, askedFields, outcome, durationMs
+| filter message = "mcp_request" and sessionId = "<session id>"
+| sort @timestamp asc
+
+# Funnel reach: how many conversations were asked each question
+filter message = "mcp_request" and tool = "solar_quote" and flowStatus = "interrupt"
+| stats count_distinct(sessionId) as sessions by askedFields.0
+```
+
+The lead recorder logs one line per lead to
+`/aws/lambda/agentcore-waniwani-mcp-funnel-<env>-lead-recorder`. Runtime-level metrics
+(invocations, latency, errors, sessions) are in the `bedrock-agentcore` CloudWatch namespace.
+Distributed tracing is not set up: it needs OpenTelemetry in the container and CloudWatch
+Transaction Search, which is an account-wide, usage-billed setting.
+
 ## Limitations
 
 - **Machine-to-machine auth only.** The Cognito client uses the client-credentials grant, which
@@ -152,6 +200,7 @@ lib/shared/config.ts              Per-environment configuration (dev/prod)
 src/mcp-server/flow.ts            The funnel, defined with the WaniWani SDK
 src/mcp-server/server.ts          Stateless Streamable HTTP server (/mcp, /ping)
 src/mcp-server/dynamo-kv-store.ts WaniWani flow store on DynamoDB
+src/mcp-server/request-log.ts     One structured log line per MCP request
 src/mcp-server/main.ts            Container entry point and environment wiring
 src/handlers/lead-recorder/       Lambda that persists captured leads
 scripts/smoke.ts                  End-to-end walk of the funnel over MCP
