@@ -5,6 +5,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { withWaniwani } from '@waniwani/sdk/mcp';
 import { createQuoteFlow } from './flow';
 import type { QuoteFlowDependencies } from './flow';
+import { consoleRequestLogger, describeFlowResult, describeRequest } from './request-log';
+import type { RequestLogEntry, RequestLogger } from './request-log';
 import { registerResultTool } from './result-tool';
 
 export const SERVER_NAME = 'solar-quote-funnel';
@@ -39,10 +41,24 @@ function sendJsonRpcError(res: ServerResponse, status: number, code: number, mes
  * instance can serve any call. Conversation state lives in the flow store,
  * keyed by the `Mcp-Session-Id` header AgentCore adds to each request.
  */
-export function createHttpServer(dependencies: QuoteFlowDependencies): Server {
+export function createHttpServer(
+  dependencies: QuoteFlowDependencies,
+  log: RequestLogger = consoleRequestLogger,
+): Server {
   const flow = createQuoteFlow(dependencies);
 
   const handleMcp = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
+    const startedAt = Date.now();
+    const sessionHeader = req.headers['mcp-session-id'];
+    const entry: Omit<RequestLogEntry, 'httpStatus' | 'durationMs'> = {
+      message: 'mcp_request',
+      sessionId: typeof sessionHeader === 'string' ? sessionHeader : undefined,
+    };
+    // Logged once the response is finished, whichever way the request ends.
+    res.on('close', () => {
+      log({ ...entry, httpStatus: res.statusCode, durationMs: Date.now() - startedAt });
+    });
+
     let body: unknown;
     try {
       body = await readJsonBody(req);
@@ -50,11 +66,18 @@ export function createHttpServer(dependencies: QuoteFlowDependencies): Server {
       sendJsonRpcError(res, 400, -32700, 'Parse error');
       return;
     }
+    Object.assign(entry, describeRequest(body));
 
     const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
     // A no-op without WANIWANI_API_KEY; with one it adds tracking.
     await withWaniwani(server, { injectWidgetToken: Boolean(process.env.WANIWANI_API_KEY) });
-    await flow.register(server);
+    // Same as `flow.register(server)`, with the handler wrapped so the log
+    // line can say where the flow stopped.
+    server.registerTool(flow.name, flow.config, async (args, extra) => {
+      const result = await flow.handler(args, extra);
+      Object.assign(entry, describeFlowResult(result.structuredContent));
+      return result;
+    });
     registerResultTool(server);
 
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
